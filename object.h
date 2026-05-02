@@ -33,6 +33,13 @@ struct em {
 
 };
 
+struct eb {
+	SDL_Texture* t = nullptr;
+	SDL_FPoint p = { 0,0 };
+	int w = 0;
+	int h = 0;
+	int s = 400;
+};
 
 
 

@@ -107,6 +107,7 @@ void Scenemain::keyboardControl(float deltaTime)//可整合至player类中
 
 void Scenemain::sP()
 {
+	
 }
 
 
