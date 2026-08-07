@@ -1,0 +1,61 @@
+#ifndef SCENE_MAIN_H
+#define SCENE_MAIN_H
+#define SDL_MAIN_HANDLED
+
+#include "Scene.h"
+#include "object.h"
+#include <SDL.h>
+#include <list>
+
+class Game;
+
+
+class Scenemain :public Scene {
+public:
+	Scenemain();
+	~Scenemain();
+
+
+	void update(float deltaTime) override;
+	void render() override;
+	void handleEvents(SDL_Event* event) override;//ÊÂ¼þ
+	void init() override;
+	void clean() override;
+
+	void keyboardControl(float deltaTime);
+
+	void sP();
+	void eP();
+	void ae1p();
+	void uppb(float deltaTime);
+	void rpb();
+
+	void eppb(float deltaTime);
+	
+
+private:
+	
+	Game& game;
+	player a;
+	em ae1;
+
+
+	pb pbtl;
+	eb eeb1;
+	eb eeb2;
+
+
+
+	std::list<em*>aee1;
+
+	std::list<pb*>ppb;
+	std::list<eb*>eeb;
+};
+
+
+
+
+
+
+
+#endif // SCENE_MAIN_H
