@@ -27,7 +27,7 @@ struct em {
 	SDL_FPoint po = { 0,0 };
 	int ewidth = 0;
 	int eheight = 0;
-	int speed = 200;
+	int speed = 15;
 	Uint32 cd = 700;
 	Uint32 ls = 0;
 

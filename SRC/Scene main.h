@@ -23,6 +23,7 @@ public:
 	void clean() override;
 
 	void keyboardControl(float deltaTime);
+	void e1move(float deltaTime);
 
 	void sP();
 	void eP();
@@ -30,8 +31,11 @@ public:
 	void uppb(float deltaTime);
 	void rpb();
 
+	void emm();
+
 	void eppb(float deltaTime);
-	
+
+	int time();
 
 private:
 	
@@ -43,7 +47,7 @@ private:
 	pb pbtl;
 	eb eeb1;
 	eb eeb2;
-
+	int aaa = 0;
 
 
 	std::list<em*>aee1;
