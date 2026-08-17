@@ -25,8 +25,14 @@ public:
 	void keyboardControl(float deltaTime);
 	void e1move(float deltaTime);
 
+	void emove_time(float deltaTime);
+
+
 	void sP();
 	void eP();
+
+	void ee1p(float deltaTime);
+
 	void ae1p();
 	void uppb(float deltaTime);
 	void rpb();
@@ -35,7 +41,7 @@ public:
 
 	void eppb(float deltaTime);
 
-	int time();
+	//int time();
 
 private:
 	
@@ -48,7 +54,7 @@ private:
 	eb eeb1;
 	eb eeb2;
 	int aaa = 0;
-
+	int ee = 0;
 
 	std::list<em*>aee1;
 

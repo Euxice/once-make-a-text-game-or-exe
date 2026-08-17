@@ -20,6 +20,7 @@ void Scenemain::update(float deltaTime)
 	
 	keyboardControl(deltaTime);
 	
+	//emove_time(deltaTime); //    ÊÔÖÆ
 	e1move(deltaTime);
 	uppb(deltaTime);
 	eppb(deltaTime);
@@ -72,8 +73,7 @@ void Scenemain::init()
 	SDL_QueryTexture(ae1.t, NULL, NULL, &ae1.ewidth, &ae1.eheight);
 	ae1.ewidth /= 10;
 	ae1.eheight /= 10;
-	ae1.po.x = -50;
-	ae1.po.y = 50;
+	
 
 	eeb1.t = IMG_LoadTexture(game.getRenderer(), "D:/Text game/CMakeProject1/jpg & png/set eebp1 3.png");
 	SDL_QueryTexture(eeb1.t, NULL, NULL, &eeb1.w, &eeb1.h);
@@ -266,6 +266,76 @@ void Scenemain::e1move(float deltaTime)
 	}
 }
 
+void Scenemain::emove_time(float deltaTime)
+{
+	int els = 0;
+	int ecd = 300;
+	auto ct = SDL_GetTicks();
+	if (ct - els > ecd && ee < 5)
+	{
+		ee1p(deltaTime);
+		//e1move(deltaTime);
+		els = ct;
+		std::cout << ee << std::endl;
+	}
+	for (auto it = aee1.begin(); it != aee1.end();)
+	{
+		long iii = 0;
+		auto pj = *it;
+
+		for (int m = 0; m < 10; m++)
+		{
+
+			if (pj->po.x <= 620 && aaa % 2 != 1)
+			{
+				pj->po.x += pj->speed * deltaTime;
+				if (pj->po.x > 620)
+				{
+					aaa += 1;
+				}
+				std::cout << iii;
+				if (iii % 2 == 0)
+				{
+					pj->po.y += pj->speed * deltaTime / 2;
+				}
+
+
+				iii++;
+				std::cout << "|" << pj->po.x << "|" << std::endl;
+
+			}
+			else if (pj->po.x > 0 && aaa % 2 == 1)
+			{
+				pj->po.x -= pj->speed * deltaTime;
+				if (pj->po.x < 0)
+				{
+					aaa += 1;
+				}
+				std::cout << iii;
+				std::cout << "|" << pj->po.x << "|" << std::endl;
+				iii++;
+				if (iii % 2 == 0)
+				{
+					pj->po.y += pj->speed * deltaTime / 2;
+				}
+			}
+
+
+
+
+			if (pj->po.y > 770)
+			{
+				pj->po.x = -50;
+				pj->po.y = -50;
+				aaa = 0;
+			}
+		}
+	}
+
+
+
+}
+
 void Scenemain::sP()
 {
 	auto pj = new pb(pbtl);
@@ -281,6 +351,20 @@ void Scenemain::eP()
 	pj->p.x = ae1.po.x + ae1.ewidth/2 - pj->w / 2;
 	pj->p.y = ae1.po.y+30;
 	eeb.push_back(pj);
+}
+
+void Scenemain::ee1p(float deltaTime)
+{
+	auto pj = new em(ae1);
+	pj->po.x = -50;
+	pj->po.y = 50;
+	aee1.push_back(pj);
+	ee += 1;
+	//e1move(deltaTime);
+
+
+
+
 }
 
 void Scenemain::ae1p()
@@ -379,19 +463,19 @@ void Scenemain::eppb(float deltaTime)
 
 }
 
-int Scenemain::time()
-{
-	if (ae1.po.x == 620)
-	{
-		aaa = 1;
-		std::cout << "aaa" << aaa << std::endl;
-		return aaa;
-	}
-	else {
-		return aaa;
-	}
-	
-}
+//int Scenemain::time()
+//{
+//	if (ae1.po.x == 620)
+//	{
+//		aaa = 1;
+//		std::cout << "aaa" << aaa << std::endl;
+//		return aaa;
+//	}
+//	else {
+//		return aaa;
+//	}
+//	
+//}
 
 
 
