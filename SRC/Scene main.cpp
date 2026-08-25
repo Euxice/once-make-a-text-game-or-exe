@@ -20,22 +20,40 @@ void Scenemain::update(float deltaTime)
 	
 	keyboardControl(deltaTime);
 	
+
+
+
+
 	//emove_time(deltaTime); //    试制
 	e1move(deltaTime);
 	uppb(deltaTime);
 	eppb(deltaTime);
-	
+	spawE();
+	upE(deltaTime);
+	upss(deltaTime);
+
+
+
+
+
+
+
 }
 
 void Scenemain::render()
 {
-	
+	ren();
 	rpb();
 	ae1p();
+	rss();
 	SDL_Rect aRect = { static_cast<int>(a.position.x),static_cast<int>(a.position.y),a.width,a.height };
 	SDL_RenderCopy(game.getRenderer(), a.texture, NULL, &aRect);
 	SDL_Rect eRect = { static_cast<int>(ae1.po.x),static_cast<int>(ae1.po.y),ae1.ewidth,ae1.eheight };
 	SDL_RenderCopy(game.getRenderer(), ae1.t, NULL, &eRect);
+	
+
+
+
 }
 
 void Scenemain::handleEvents(SDL_Event* event)
@@ -48,6 +66,13 @@ void Scenemain::handleEvents(SDL_Event* event)
 
 void Scenemain::init()
 {
+	std::random_device rd;
+	gen = std::mt19937(rd());
+	dis = std::uniform_real_distribution<float>(0.0f, 1.0f);
+	auto r = dis(gen);
+
+
+
 	a.texture = IMG_LoadTexture(game.getRenderer(), "D:/Text game/CMakeProject1/jpg & png/set1.png");
 	if (a.texture == nullptr)
 	{
@@ -81,7 +106,24 @@ void Scenemain::init()
 	eeb1.h /= 20;
 
 
+	en1.t = IMG_LoadTexture(game.getRenderer(),"D:/Text game/CMakeProject1/jpg & png/en1.png");
+	if (en1.t == nullptr)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "en1 t Error :%s", SDL_GetError());
+	}
+	SDL_QueryTexture(en1.t, NULL, NULL, &en1.w, &en1.h);
+	en1.w /= 20;
+	en1.h /= 20;
 
+	eeb3.t = IMG_LoadTexture(game.getRenderer(), "D:/Text game/CMakeProject1/jpg & png/ser2 eeb2.png");
+	if (eeb3.t == nullptr)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "eeb3 t Error :%s", SDL_GetError());
+
+	}
+	SDL_QueryTexture(eeb3.t, NULL, NULL, &eeb3.w, &eeb3.h);
+	eeb3.w /= 20;
+	eeb3.h /= 20;
 
 
 
@@ -91,6 +133,7 @@ void Scenemain::init()
 
 void Scenemain::clean()
 {
+
 	for (auto& pj : ppb)
 	{
 		if (pj != nullptr)
@@ -98,6 +141,14 @@ void Scenemain::clean()
 			delete pj;
 		}
 		ppb.clear();
+	}
+	for (auto& pj : ye1)
+	{
+		if (pj != nullptr)
+		{
+			delete pj;
+		}
+		ye1.clear();
 	}
 	if (a.texture != nullptr)
 	{
@@ -115,6 +166,13 @@ void Scenemain::clean()
 	{
 		SDL_DestroyTexture(eeb1.t);
 	}
+	if (eeb3.t != nullptr)
+	{
+		SDL_DestroyTexture(eeb3.t);
+	}
+
+
+
 }
 
 void Scenemain::keyboardControl(float deltaTime)//可整合至player类中
@@ -460,6 +518,142 @@ void Scenemain::eppb(float deltaTime)
 			++it;
 		}
 	}
+
+}
+
+void Scenemain::spawE()
+{
+	if (dis(gen) > 1 / 60.0f)
+	{
+		return;
+	}
+	En* e = new En(en1);
+	e->p.x = dis(gen) * (game.getWindowWidth() - e->w)-180;
+	e->p.y = - e->h;
+	ye1.push_back(e);
+
+
+
+}
+
+void Scenemain::upE(float deltaTime)
+{
+	auto cT = SDL_GetTicks();
+	for (auto it = ye1.begin(); it != ye1.end();)
+	{
+		auto pj = *it;
+		pj->p.y += pj->s * deltaTime;
+
+		if (pj->p.y >800)
+		{
+			delete pj;
+			it = ye1.erase(it);
+		}
+		else {
+			if (cT-pj->ls>pj->cd)
+			{
+				shootE(pj);
+				pj->ls = cT;
+			}
+			++it;
+
+		}
+	}
+
+
+
+
+
+
+
+
+}
+
+void Scenemain::ren()
+{
+	for (auto pj : ye1)
+	{
+		SDL_Rect er = {
+			static_cast<int>(pj->p.x),
+			static_cast<int>(pj->p.y),
+			pj->w,
+			pj->h
+
+		};
+		SDL_RenderCopy(game.getRenderer(), pj->t, NULL, &er);
+	}
+
+
+
+
+}
+
+void Scenemain::shootE(En* en1 )
+{
+	auto pj = new SPe(eeb3);
+	pj->p.x = en1->p.x + en1->w / 2 - pj->w / 2;
+	pj->p.y = en1->p.y + en1->h / 2 - pj->h / 2;
+	pj->d = getc(en1);// 矢量确认
+
+
+	ss.push_back(pj);
+
+
+}
+
+SDL_FPoint Scenemain::getc(En* en1)//方向，向量
+{
+	auto x = (a.position.x + a.width / 2) - (en1->p.x + en1->w / 2);
+	auto y = (a.position.y + a.height / 2) - (en1->p.y + en1->h / 2);
+	auto len = sqrt(x * x + y * y);
+	x /= len;
+	y /= len;
+
+	return SDL_FPoint(x,y);
+}
+
+void Scenemain::upss(float deltaTime)
+{
+	auto margin = 32;
+	for (auto it = ss.begin(); it != ss.end();)
+	{
+		auto pj = *it;
+		pj->p.x += pj->s * pj->d.x * deltaTime;
+		pj->p.y += pj->s * pj->d.y * deltaTime;
+		if (pj->p.y > 800||
+			pj->p.y<-margin||
+			pj->p.x<-margin||
+			pj->p.x>620+margin)
+		{
+			delete pj;
+			it = ss.erase(it);
+		}
+		else {
+			++it;
+		}
+	}
+
+
+
+
+}
+
+void Scenemain::rss()
+{
+	for (auto pj : ss)
+	{
+		SDL_Rect pjr = {
+			static_cast<int>(pj->p.x),
+			static_cast<int>(pj->p.y),
+			pj->w,
+			pj->h
+		};
+		//SDL_RenderCopy(game.getRenderer(), pj->t, NULL, &pjr);
+		float a = atan2(pj->d.y, pj->d.x) * 180 / M_PI - 90;// 由于两者之间角度协议不同，所以需要的角度比计算角小90°
+		SDL_RenderCopyEx(game.getRenderer(), pj->t, NULL, &pjr, a, NULL, SDL_FLIP_NONE);
+	}
+
+
 
 }
 

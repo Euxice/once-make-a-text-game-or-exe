@@ -22,6 +22,10 @@ struct pb {
 
 
 
+
+
+
+//原创部分
 struct em {
 	SDL_Texture* t = nullptr;
 	SDL_FPoint po = { 0,0 };
@@ -43,12 +47,35 @@ struct eb {
 	int s = 200;
 };
 
+//原创结束
 
 
 
 
 
 
+
+struct En {
+	SDL_Texture* t = nullptr;
+	SDL_FPoint p = { 0.0 };
+	int w = 0;
+	int h = 0;
+	int s = 200;
+	Uint32 cd = 1500;
+	Uint32 ls = 0;
+};
+
+
+
+struct SPe {
+	SDL_Texture* t = nullptr;
+	SDL_FPoint p = { 0.0 };
+	SDL_FPoint d = { 0.0 };
+	int w = 0;
+	int h = 0;
+	int s = 400;
+	
+};
 
 
 

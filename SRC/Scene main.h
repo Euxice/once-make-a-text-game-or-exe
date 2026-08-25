@@ -6,7 +6,7 @@
 #include "object.h"
 #include <SDL.h>
 #include <list>
-
+#include <random>// 随机19937算法主要
 class Game;
 
 
@@ -43,11 +43,36 @@ public:
 
 	//int time();
 
+
+
+
+	void spawE();
+	void upE(float deltaTime);
+	void ren();
+
+
+	void shootE(En *en1);
+	SDL_FPoint getc(En*en1);
+	void upss(float deltaTime);
+	void rss();
+
 private:
-	
+	std::random_device rd;
+	std::mt19937 gen;
+	std::uniform_real_distribution<float>dis;
+
+
+
+
 	Game& game;
 	player a;
 	em ae1;
+	En en1;
+
+
+
+	SPe eeb3;
+
 
 
 	pb pbtl;
@@ -57,6 +82,10 @@ private:
 	int ee = 0;
 
 	std::list<em*>aee1;
+	std::list<En*>ye1;
+
+	std::list<SPe*>ss;
+
 
 	std::list<pb*>ppb;
 	std::list<eb*>eeb;
