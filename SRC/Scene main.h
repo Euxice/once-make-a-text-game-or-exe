@@ -17,6 +17,9 @@ public:
 
 
 	void update(float deltaTime) override;
+
+	void UpdatePlayer(float deltaTime);
+
 	void render() override;
 	void handleEvents(SDL_Event* event) override;//ÊÂ¼þ
 	void init() override;
@@ -56,13 +59,18 @@ public:
 	void upss(float deltaTime);
 	void rss();
 
+
+
+
+	void enemyExplode(En* enemy);
+
 private:
 	std::random_device rd;
 	std::mt19937 gen;
 	std::uniform_real_distribution<float>dis;
 
 
-
+	bool isdead = false;
 
 	Game& game;
 	player a;

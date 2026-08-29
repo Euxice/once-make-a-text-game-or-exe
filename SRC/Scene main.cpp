@@ -25,18 +25,54 @@ void Scenemain::update(float deltaTime)
 
 
 	//emove_time(deltaTime); //    试制
-	e1move(deltaTime);
+	//e1move(deltaTime);
 	uppb(deltaTime);
-	eppb(deltaTime);
+	//eppb(deltaTime);
 	spawE();
 	upE(deltaTime);
 	upss(deltaTime);
 
+	UpdatePlayer(deltaTime);
 
 
 
 
 
+}
+
+void Scenemain::UpdatePlayer(float deltaTime)
+{
+	if (isdead == true)
+	{
+		return;
+	}
+	if (a.he <= 0)
+	{
+		//todo game over
+		isdead = true;
+	}
+	for (auto enemy : ye1)
+	{
+		SDL_Rect enn = {
+			static_cast<int>(enemy->p.x),
+			static_cast<int>(enemy->p.y),
+			enemy->w,
+			enemy->h
+		};
+		SDL_Rect paa = {
+			static_cast<int>(a.position.x),
+			static_cast<int>(a.position.y),
+			a.width,
+			a.height
+		};
+		if (SDL_HasIntersection(&paa, &enn))
+		{
+			a.he -= 1;
+			enemy->he -= 1 ;
+			
+
+		}
+	}
 
 }
 
@@ -46,10 +82,17 @@ void Scenemain::render()
 	rpb();
 	ae1p();
 	rss();
-	SDL_Rect aRect = { static_cast<int>(a.position.x),static_cast<int>(a.position.y),a.width,a.height };
-	SDL_RenderCopy(game.getRenderer(), a.texture, NULL, &aRect);
-	SDL_Rect eRect = { static_cast<int>(ae1.po.x),static_cast<int>(ae1.po.y),ae1.ewidth,ae1.eheight };
-	SDL_RenderCopy(game.getRenderer(), ae1.t, NULL, &eRect);
+	if (!isdead)
+	{
+		SDL_Rect aRect = { static_cast<int>(a.position.x),
+			static_cast<int>(a.position.y),
+			a.width,
+			a.height };
+	    SDL_RenderCopy(game.getRenderer(), a.texture, NULL, &aRect);
+	}
+	
+	/*SDL_Rect eRect = { static_cast<int>(ae1.po.x),static_cast<int>(ae1.po.y),ae1.ewidth,ae1.eheight };
+	SDL_RenderCopy(game.getRenderer(), ae1.t, NULL, &eRect);*/
 	
 
 
@@ -177,6 +220,10 @@ void Scenemain::clean()
 
 void Scenemain::keyboardControl(float deltaTime)//可整合至player类中
 {
+	if (isdead == true)
+	{
+		return;
+	}
 	auto k = SDL_GetKeyboardState(NULL);
 	if (k[SDL_SCANCODE_W])
 	{
@@ -455,7 +502,36 @@ void Scenemain::uppb(float deltaTime)
 		}
 		else
 		{
-			++it;
+			bool hit = false;
+			for (auto eo : ye1)
+			{
+				SDL_Rect eR = {
+					static_cast<int>(eo->p.x),
+					static_cast<int>(eo->p.y),
+					eo->w,
+					eo->h
+
+
+				};
+				SDL_Rect bp = {
+					static_cast<int>(pj->p.x),
+					static_cast<int>(pj->p.y),
+					pj->w,
+					pj->h
+				};
+				if (SDL_HasIntersection(&eR, &bp))
+				{
+					eo->he -= pj->het;
+					delete pj;
+					it = ppb.erase(it);
+					hit = true;
+					break;
+				}
+			}
+			if (!hit)
+			{
+				++it;
+			}
 		}
 	
 	}
@@ -508,7 +584,7 @@ void Scenemain::eppb(float deltaTime)
 		int m = 10;
 		auto pj = *it;
 		pj->p.y += pj->s * deltaTime;
-		if (pj->p.y - m > 800)
+		if (pj->p.y - m > 800 && !isdead)
 		{
 			delete pj;
 			it = eeb.erase(it);
@@ -528,7 +604,7 @@ void Scenemain::spawE()
 		return;
 	}
 	En* e = new En(en1);
-	e->p.x = dis(gen) * (game.getWindowWidth() - e->w)-180;
+	e->p.x = dis(gen) * (game.getWindowWidth() - e->w+30)-230;
 	e->p.y = - e->h;
 	ye1.push_back(e);
 
@@ -538,9 +614,11 @@ void Scenemain::spawE()
 
 void Scenemain::upE(float deltaTime)
 {
+	
 	auto cT = SDL_GetTicks();
 	for (auto it = ye1.begin(); it != ye1.end();)
 	{
+
 		auto pj = *it;
 		pj->p.y += pj->s * deltaTime;
 
@@ -550,12 +628,20 @@ void Scenemain::upE(float deltaTime)
 			it = ye1.erase(it);
 		}
 		else {
-			if (cT-pj->ls>pj->cd)
+			if (cT-pj->ls>pj->cd && isdead == false)
 			{
 				shootE(pj);
 				pj->ls = cT;
 			}
-			++it;
+			if (pj->he <= 0)
+			{
+				enemyExplode(pj);
+				it = ye1.erase(it);
+			}
+			else
+			{
+				++it;
+			}
 
 		}
 	}
@@ -629,7 +715,28 @@ void Scenemain::upss(float deltaTime)
 			it = ss.erase(it);
 		}
 		else {
-			++it;
+			SDL_Rect pjbr = {
+				static_cast<int>(pj->p.x),
+				static_cast<int>(pj->p.y),
+				pj->w,
+				pj->h
+			};
+			SDL_Rect ppr = {
+				static_cast<int>(a.position.x),
+				static_cast<int>(a.position.y),
+				a.width,
+				a.height
+			};
+			if (SDL_HasIntersection(&pjbr, &ppr) )
+			{
+				a.he -= pj->het;
+				delete pj;
+				it = ss.erase(it);
+			}
+			else
+			{
+				++it;
+			}
 		}
 	}
 
@@ -652,6 +759,16 @@ void Scenemain::rss()
 		float a = atan2(pj->d.y, pj->d.x) * 180 / M_PI - 90;// 由于两者之间角度协议不同，所以需要的角度比计算角小90°
 		SDL_RenderCopyEx(game.getRenderer(), pj->t, NULL, &pjr, a, NULL, SDL_FLIP_NONE);
 	}
+
+
+
+}
+
+void Scenemain::enemyExplode(En* enemy)
+{
+	delete enemy;
+
+
 
 
 

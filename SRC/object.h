@@ -8,6 +8,7 @@ struct player {
 	int width = 0;
 	int height = 0;
 	int speed = 300;
+	int he = 10;
 	Uint32 cd = 70;
 	Uint32 ls = 0;
 };
@@ -18,6 +19,7 @@ struct pb {
 	int w = 0;
 	int h = 0;
 	int s = 1300;
+	int het = 1;
 };
 
 
@@ -61,6 +63,7 @@ struct En {
 	int w = 0;
 	int h = 0;
 	int s = 200;
+	int he = 1;
 	Uint32 cd = 1500;
 	Uint32 ls = 0;
 };
@@ -74,6 +77,7 @@ struct SPe {
 	int w = 0;
 	int h = 0;
 	int s = 400;
+	int het = 1;
 	
 };
 
